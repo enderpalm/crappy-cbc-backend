@@ -1,0 +1,42 @@
+{
+  "name": "cedt-hotel-booking",
+  "version": "1.0",
+  "description": "express server for hotel booking backend",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "pm2 start server.js",
+    "status": "pm2 list",
+    "stop": "pm2 stop server.js",
+    "fmt-check": "prettier --check .",
+    "prepare": "husky"
+  },
+  "keywords": [
+    "cedt",
+    "backend",
+    "project"
+  ],
+  "author": "concern-but-complete",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^7.5.0",
+    "express-xss-sanitizer": "^2.0.0",
+    "helmet": "^8.0.0",
+    "hpp": "^0.2.3",
+    "husky": "^9.1.7",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.10.1",
+    "morgan": "^1.10.0",
+    "pm2": "^6.0.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9",
+    "prettier": "3.5.3"
+  }
+}

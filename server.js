@@ -44,14 +44,12 @@ app.use("/api/v1/auth", auth);
 app.use("/api/v1/bookings", bookings);
 
 // listening to request on port 5000
+const HOST = process.env.HOST || "localhost";
 const PORT = process.env.PORT || 5000;
 const server = app.listen(
   PORT,
   console.log(
-    "Server is running in",
-    process.env.NODE_ENV,
-    "mode in port",
-    PORT,
+    `Server running in ${process.env.NODE_ENV} mode on ${HOST}:${PORT}`,
   ),
 );
 

@@ -13,6 +13,6 @@ router.post("/register", register);
 router.post("/login", login);
 router.get("/logout", verifyToken, logout);
 router.get("/me", verifyToken, getMe);
-router.put("/updateUser", verifyToken, updateUser);
+router.put("/update", verifyToken, updateUser);
 
 module.exports = router;

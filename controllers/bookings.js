@@ -108,10 +108,15 @@ exports.getBookings = async (req, res) => {
 };
 exports.getBooking = async (req, res) => {
   try {
-    const booking = await Booking.findById(req.params.id).populate({
-      path: "hotel",
-      select: "name address tel",
-    });
+    const booking = await Booking.findById(req.params.id)
+      .populate({
+        path: "hotel",
+        select: "name address tel",
+      })
+      .populate({
+        path: "user",
+        select: "name email tel",
+      });
 
     if (!booking) {
       return res.status(404).json({
@@ -145,11 +150,14 @@ exports.addBooking = async (req, res) => {
     }
 
     req.body.user = req.user.id;
-    const {start_date, end_date, user} = req.body;
+    const { start_date, end_date, user } = req.body;
     if (!user || !start_date || !end_date) {
       return res.status(400).json({
         success: false,
-        msg: missingRequiredFields([user, start_date, end_date], ["user", "start_date", "end_date"]),
+        msg: missingRequiredFields(
+          [user, start_date, end_date],
+          ["user", "start_date", "end_date"],
+        ),
       });
     }
 

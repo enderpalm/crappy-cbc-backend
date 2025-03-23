@@ -39,9 +39,9 @@ const limiter = rateLimit({
 app.use(hpp());
 app.use(cors());
 
-app.use("/api/v9/hotels", hotels);
-app.use("/api/v9/auth", auth);
-app.use("/api/v9/bookings", bookings);
+app.use("/api/v1/hotels", hotels);
+app.use("/api/v1/auth", auth);
+app.use("/api/v1/bookings", bookings);
 
 // listening to request on port 5000
 const PORT = process.env.PORT || 5000;

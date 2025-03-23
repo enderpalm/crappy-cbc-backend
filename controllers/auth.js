@@ -1,3 +1,4 @@
+const Booking = require("../models/Booking");
 const User = require("../models/User");
 const { missingRequiredFields, serverError } = require("./lib/resMsg");
 
@@ -44,11 +45,11 @@ exports.register = async (req, res) => {
     const newUser = new User({ name, email, password, tel, role });
     await newUser.save();
     sendTokenResponse(newUser, 201, res);
-  } catch (error) {
-    if (error.message) {
-      res.status(400).json({ success: false, msg: error.message });
+  } catch (err) {
+    if (err.message) {
+      res.status(400).json({ success: false, msg: err.message });
     } else {
-      res.status(501).json({ success: false, msg: serverError });
+      res.status(500).json({ success: false, msg: serverError });
     }
   }
 };
@@ -91,7 +92,8 @@ exports.logout = async (_req, res) => {
 
 exports.getMe = async (req, res) => {
   const user = await User.findById(req.user.id);
-  res.status(200).json({ success: true, data: user });
+  const bookingCount = await Booking.countDocuments({ user: req.user.id });
+  res.status(200).json({ success: true, data: { user, bookingCount } });
 };
 
 exports.updateUser = async (req, res) => {
@@ -119,7 +121,10 @@ exports.updateUser = async (req, res) => {
 
     res.status(200).json({ success: true, data: user });
   } catch (err) {
-    console.log(err.stack);
-    res.status(400).json({ success: false });
+    if (err.message) {
+      res.status(400).json({ success: false, msg: err.message });
+    } else {
+      res.status(500).json({ success: false, msg: serverError });
+    }
   }
 };

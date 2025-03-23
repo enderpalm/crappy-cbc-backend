@@ -1,4 +1,5 @@
 const Hotel = require("../models/Hotel.js");
+const { missingRequiredFields } = require("./lib/resMsg.js");
 
 exports.getHotels = async (req, res) => {
   try {
@@ -47,7 +48,11 @@ exports.getHotels = async (req, res) => {
       .status(200)
       .json({ success: true, count: hotel.length, pagination, data: hotel });
   } catch (err) {
-    res.status(400).json({ success: false });
+    if (err.message) {
+      res.status(400).json({ success: false, msg: err.message });
+    } else {
+      res.status(500).json({ success: false, msg: serverError });
+    }
   }
 };
 
@@ -55,20 +60,58 @@ exports.getHotel = async (req, res) => {
   try {
     const hotel = await Hotel.findById(req.params.id);
     if (!hotel) {
-      return res.status(400).json({ success: false });
+      return res.status(404).json({
+        success: false,
+        msg: `No hotel with the id of ${req.params.id}`,
+      });
     }
     res.status(200).json({ success: true, data: hotel });
   } catch (err) {
-    res.status(400).json({ success: false });
+    console.log(err.stack);
+    if (err.message) {
+      res.status(400).json({ success: false, msg: err.message });
+    } else {
+      res.status(500).json({ success: false, msg: serverError });
+    }
   }
 };
 
 exports.createHotel = async (req, res) => {
   try {
+    const { name, address, tel } = req.body;
+    if (!name || !address || !tel) {
+      return res.status(400).json({
+        success: false,
+        msg: missingRequiredFields(
+          [name, address, tel],
+          ["name", "address", "tel"],
+        ),
+      });
+    }
+    const { building_number, street, district, province, postalcode } = address;
+    if (!building_number || !street || !district || !province || !postalcode) {
+      return res.status(400).json({
+        success: false,
+        msg: missingRequiredFields(
+          [building_number, street, district, province, postalcode],
+          [
+            "address.building_number",
+            "address.street",
+            "address.district",
+            "address.province",
+            "address.postalcode",
+          ],
+        ),
+      });
+    }
     const hotel = await Hotel.create(req.body);
     res.status(201).json({ success: true, data: hotel });
   } catch (err) {
-    res.status(400).json({ success: false, msg: err.message });
+    if (err.message) {
+      res.status(400).json({ success: false, msg: err.message });
+    } else {
+      res.status(500).json({ success: false, msg: serverError });
+    }
   }
 };
 
@@ -84,7 +127,11 @@ exports.updateHotel = async (req, res) => {
     res.status(200).json({ success: true, data: hotel });
   } catch (err) {
     console.log(err.stack);
-    res.status(400).json({ success: false });
+    if (err.message) {
+      res.status(400).json({ success: false, msg: err.message });
+    } else {
+      res.status(500).json({ success: false, msg: serverError });
+    }
   }
 };
 
@@ -94,7 +141,7 @@ exports.deleteHotel = async (req, res) => {
     if (!hotel)
       return res.status(404).json({
         success: false,
-        msg: `Hotel not found with id of ${req.params.id}`,
+        msg: `No hotel with the id of ${req.params.id}`,
       });
 
     await Booking.deleteMany({ hotel: req.params.id });
@@ -102,6 +149,10 @@ exports.deleteHotel = async (req, res) => {
 
     res.status(200).json({ success: true, data: {} });
   } catch (err) {
-    res.status(400).json({ success: false });
+    if (err.message) {
+      res.status(400).json({ success: false, msg: err.message });
+    } else {
+      res.status(500).json({ success: false, msg: serverError });
+    }
   }
 };

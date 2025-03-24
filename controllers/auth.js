@@ -16,7 +16,14 @@ const sendTokenResponse = (user, statusCode, res) => {
   res
     .status(statusCode)
     .cookie("token", token, options)
-    .json({ success: true, token });
+    .json({
+      success: true,
+      token,
+      user: {
+        name: user.name,
+        isAdmin: user.role === "admin",
+      },
+    });
 };
 
 exports.register = async (req, res) => {

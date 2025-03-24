@@ -64,10 +64,15 @@ exports.getBookings = async (req, res) => {
         message: "User is not authorized to use date range filter",
       });
     }
-    query = Booking.find({ user: req.user.id }).populate({
-      path: "hotel",
-      select: "name address tel",
-    });
+    query = Booking.find({ user: req.user.id })
+      .populate({
+        path: "hotel",
+        select: "name address tel",
+      })
+      .populate({
+        path: "user",
+        select: "name email tel",
+      });
   } else {
     if (req.params.hotelId && req.query.start_date && req.query.end_date) {
       const { hotelId } = req.params;

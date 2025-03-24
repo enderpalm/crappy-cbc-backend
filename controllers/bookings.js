@@ -26,7 +26,7 @@ const canUserViewBooking = (booking, user, res, action) => {
     return false;
   }
 
-  if (booking.user.toString() !== user.id && user.role !== "admin") {
+  if (booking.user.id !== user.id && user.role !== "admin") {
     res.status(401).json({
       success: false,
       message: `User ${user.id} is not authorized to ${action} this booking`,

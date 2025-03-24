@@ -19,10 +19,8 @@ const sendTokenResponse = (user, statusCode, res) => {
     .json({
       success: true,
       token,
-      user: {
-        name: user.name,
-        isAdmin: user.role === "admin",
-      },
+      name: user.name,
+      isAdmin: user.role === "admin",
     });
 };
 

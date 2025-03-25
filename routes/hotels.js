@@ -5,6 +5,7 @@ const {
   getHotel,
   updateHotel,
   deleteHotel,
+  getCount,
 } = require("../controllers/hotels");
 const { verifyToken, authorize } = require("../middleware/auth");
 const bookingRouter = require("./bookings");

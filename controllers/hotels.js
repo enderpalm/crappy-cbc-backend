@@ -1,7 +1,22 @@
 const Hotel = require("../models/Hotel.js");
 const { missingRequiredFields } = require("./lib/resMsg.js");
 
+const getCount = async (req, res) => {
+  try {
+    const count = await Hotel.countDocuments();
+    console.log(count);
+    res.status(200).json({ success: true, count });
+  } catch (err) {
+    console.log(err.stack);
+    res.status(500).json({ success: false, msg: serverError });
+  }
+};
+
 exports.getHotels = async (req, res) => {
+  const onlyCount = req.query.count;
+  if (onlyCount === "true") {
+    return getCount(req, res);
+  }
   try {
     let query;
     const reqQuery = { ...req.query };

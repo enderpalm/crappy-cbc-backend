@@ -55,6 +55,18 @@ const parseDateAsUTC = (dateString) => {
   return new Date(dateString);
 };
 
+const getCount = async (req, res) => {
+  try {
+    const count = await Booking.countDocuments();
+    res.status(200).json({ success: true, count });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Cannot get booking count" });
+  }
+};
+
 exports.getBookings = async (req, res) => {
   let query;
   if (req.user.role !== "admin") {
@@ -64,16 +76,15 @@ exports.getBookings = async (req, res) => {
         message: "User is not authorized to use date range filter",
       });
     }
-    query = Booking.find({ user: req.user.id })
-      .populate({
-        path: "hotel",
-        select: "name address tel",
-      })
-      .populate({
-        path: "user",
-        select: "name email tel",
-      });
+    query = Booking.find({ user: req.user.id }).populate({
+      path: "hotel",
+      select: "name address tel",
+    });
   } else {
+    if (req.query.count === "true") {
+      return getCount(req, res);
+    }
+
     if (req.params.hotelId && req.query.start_date && req.query.end_date) {
       const { hotelId } = req.params;
       let { start_date, end_date } = req.query;
@@ -87,15 +98,25 @@ exports.getBookings = async (req, res) => {
       });
     } else if (req.params.hotelId) {
       console.log(req.params.hotelId);
-      query = Booking.find({ hotel: req.params.hotelId }).populate({
-        path: "hotel",
-        select: "name address tel",
-      });
+      query = Booking.find({ hotel: req.params.hotelId })
+        .populate({
+          path: "hotel",
+          select: "name address tel",
+        })
+        .populate({
+          path: "user",
+          select: "name email tel",
+        });
     } else {
-      query = Booking.find().populate({
-        path: "hotel",
-        select: "name address tel",
-      });
+      query = Booking.find()
+        .populate({
+          path: "hotel",
+          select: "name address tel",
+        })
+        .populate({
+          path: "user",
+          select: "name email tel",
+        });
     }
   }
 

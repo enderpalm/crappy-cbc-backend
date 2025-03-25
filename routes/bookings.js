@@ -5,6 +5,7 @@ const {
   addBooking,
   deleteBooking,
   updateBooking,
+  getCount,
 } = require("../controllers/bookings");
 const router = express.Router({ mergeParams: true });
 const { verifyToken, authorize } = require("../middleware/auth");
@@ -18,4 +19,5 @@ router
   .get(verifyToken, getBooking)
   .put(verifyToken, authorize("admin", "user"), updateBooking)
   .delete(verifyToken, authorize("admin", "user"), deleteBooking);
+
 module.exports = router;

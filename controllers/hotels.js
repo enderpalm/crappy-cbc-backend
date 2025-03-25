@@ -1,4 +1,5 @@
 const Hotel = require("../models/Hotel.js");
+const Booking = require("../models/Booking.js");
 const { missingRequiredFields } = require("./lib/resMsg.js");
 
 const getCount = async (req, res) => {
